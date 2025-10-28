@@ -1,0 +1,275 @@
+===============================================================================
+Stacked Bar Chart Visualization of Study Participants and Authors by Gender/Sex
+===============================================================================
+
+This Python script generates a stacked bar chart that illustrates the percentage
+distribution of study participants and authors according to gender/sex categories.
+It provides a detailed visualization for scientific reporting, allowing for
+comparisons between participant sex and author sex (first and last authors).
+
+Features:
+- Converts absolute counts to percentages for clear visualization.
+- Dynamically adjusts bar colors with tone and transparency parameters.
+- Displays percentage labels inside each bar with automatic text color adjustment.
+- Configures a horizontal legend displayed below the chart in right-to-left order.
+- Formats the Y-axis to include the percent symbol.
+- Saves the figure in JPEG, TIFF, and EPS formats via a file dialog.
+
+Author: [Da Silva DG]
+Date: [28/09/2025]
+===============================================================================
+import matplotlib.pyplot as plt
+import pandas as pd
+import matplotlib.colors as mcolors
+from tkinter import Tk, filedialog
+from matplotlib.ticker import PercentFormatter
+
+def adjust_color(hex_color, tone_factor=1.0, alpha=1.0):
+    """
+    Adjust the tone (brightness) and transparency (alpha) of a given hex color.
+
+    Parameters:
+    - hex_color (str): Hexadecimal color code (e.g., '#000000').
+    - tone_factor (float): Factor to adjust the brightness. Values >1 lighten, values <1 darken.
+    - alpha (float): Transparency level (0 = fully transparent, 1 = fully opaque).
+
+    Returns:
+    - tuple: RGBA color suitable for matplotlib.
+    """
+    rgb = mcolors.to_rgb(hex_color)  # Convert hex to RGB tuple
+    if tone_factor > 1:
+        # Lighten the color
+        adjusted_rgb = [1 - (1 - c) / tone_factor for c in rgb]
+    else:
+        # Darken the color
+        adjusted_rgb = [c * tone_factor for c in rgb]
+    return (*adjusted_rgb, alpha)  # Return as RGBA tuple
+
+def generate_stacked_bar_chart(tone_factor=1.0, alpha=1.0):
+    """
+    Generate a stacked bar chart representing the percentage distribution
+    of study participants and authors by sex/gender categories.
+
+    Parameters:
+    - tone_factor (float): Adjusts brightness of bar colors.
+    - alpha (float): Adjusts transparency of bar colors.
+
+    Outputs:
+    - Displays the figure.
+    - Saves the figure in JPEG, TIFF, and EPS formats via a file dialog.
+    """
+    # --- Absolute counts of each category ---
+    participants_f, participants_m, participants_fm = 62, 407, 95
+    first_author_f, first_author_m, first_author_fm = 86, 477, 0
+    last_author_f, last_author_m, last_author_fm = 51, 510, 0
+
+    # Organize data into a dictionary for DataFrame creation
+    data = {
+        'Sex of participants': [participants_f, participants_m, participants_fm],
+        'Author gender/sex (first)': [first_author_f, first_author_m, first_author_fm],
+        'Author gender/sex (last)': [last_author_f, last_author_m, last_author_fm]
+    }
+
+    # Define the categorical labels
+    categories = ['Female', 'Male', 'Female and Male']
+
+    # Create a pandas DataFrame with categorical index
+    df = pd.DataFrame(data, index=categories)
+
+    # Convert absolute counts to percentages for visualization
+    df_percent = df.div(df.sum(axis=0), axis=1) * 100
+
+    # --- Define base colors for bars ---
+    base_colors = ['#000000', '#c0c0c0', '#808080']  # Black, light gray, medium gray
+    # Adjust colors according to tone_factor and transparency
+    colors = [adjust_color(c, tone_factor, alpha) for c in base_colors]
+
+    # --- Initialize figure and axes ---
+    fig, ax = plt.subplots(figsize=(8, 6))  # Width x Height in inches
+    bottom = [0] * len(df_percent.columns)  # Initial bottom for stacking bars
+
+    # --- Draw stacked bars for each category ---
+    for category, color, base_color in zip(df_percent.index, colors, base_colors):
+        values = df_percent.loc[category]  # Extract percentage values for current category
+        bars = ax.bar(
+            df_percent.columns,      # X-axis labels
+            values,                  # Heights of bars
+            bottom=bottom,           # Stack on top of previous bars
+            label=category,          # Legend label
+            color=color,             # Fill color
+            edgecolor='black',       # Bar border color
+            width=0.9                # Bar width
+        )
+        # Update bottom for stacking
+        bottom = [i + j for i, j in zip(bottom, values)]
+
+        # --- Determine text color based on bar brightness ---
+        brightness = sum(mcolors.to_rgb(base_color)) / 3
+        text_color = 'white' if brightness < 0.4 else 'black'
+
+        # Add text labels inside each bar
+        for bar, value in zip(bars, values):
+            if value > 0:
+                ax.text(
+                    bar.get_x() + bar.get_width() / 2,  # Horizontal center
+                    bar.get_y() + bar.get_height() / 2, # Vertical center
+                    f'{value:.1f}%',                    # Text content
+                    ha='center',                        # Horizontal alignment
+                    va='center',                        # Vertical alignment
+                    fontsize=14,
+                    color=text_color
+                )
+
+    # --- Configure axes and labels ---
+    ax.set_ylim(0, 100)  # Set Y-axis limit from 0% to 100%
+    ax.yaxis.set_major_formatter(PercentFormatter(xmax=100, decimals=0))  # Y-axis with % symbol
+    ax.tick_params(axis='x', which='both', top=False, bottom=True, length=3)  # Customize ticks
+    ax.set_ylabel('')  # Optional: Remove Y-axis label
+    ax.set_xlabel('')  # Optional: Remove X-axis label
+
+    # --- Set title for the chart ---
+    ax.set_title('Distribution of Participants and Authors by Gender/Sex', fontsize=16, pad=15)
+
+    # --- Configure horizontal legend (side-by-side, right-to-left order) ---
+    handles, labels = ax.get_legend_handles_labels()
+    ax.legend(
+        loc='lower center',            # Place legend below the chart
+        bbox_to_anchor=(0.5, -0.12),  # Position adjustment
+        frameon=False,                 # Remove legend border
+        fontsize=10,
+        ncol=3                         # Three columns → labels side by side
+    )
+
+    plt.tight_layout()  # Adjust layout to prevent clipping
+    plt.show()          # Display the figure
+
+    # --- Save the figure using a file dialog ---
+    root = Tk()
+    root.withdraw()  # Hide the main tkinter window
+    file_path = filedialog.asksaveasfilename(
+        defaultextension=".jpg",
+        filetypes=[
+            ("JPEG files", "*.jpg"),
+            ("TIFF files", "*.tiff"),
+            ("EPS files", "*.eps"),
+            ("All files", "*.*")
+        ],
+        title="Save the figure"
+    )
+
+    # If user provides a file path, save figure in multiple formats
+    if file_path:
+        fig.savefig(file_path.rsplit('.', 1)[0] + '.jpg', dpi=600, format='jpg', bbox_inches='tight')
+        fig.savefig(file_path.rsplit('.', 1)[0] + '.tiff', dpi=600, format='tiff', bbox_inches='tight')
+        fig.savefig(file_path.rsplit('.', 1)[0] + '.eps', dpi=600, format='eps', bbox_inches='tight')
+        print(f"Saved: {file_path.rsplit('.', 1)[0] + '.jpg'}, "
+              f"{file_path.rsplit('.', 1)[0] + '.tiff'}, "
+              f"{file_path.rsplit('.', 1)[0] + '.eps'}")
+
+# --- Execute the function with customized tone and transparency ---
+generate_stacked_bar_chart(tone_factor=0.9, alpha=0.85)
+
+
+
+CODE 2
+
+"""
+===============================================================================
+Association Matrix Visualization of Study Variables
+===============================================================================
+
+This Python script generates a color-coded matrix to visualize the associations 
+between study variables, including participant sex, author sex (first and last), 
+muscle biopsy usage, molecular analyses, and publication century.
+
+Features:
+- Displays Chi-square (χ²), p-value, and Cramer's V for each association.
+- Color intensity reflects the magnitude of the Chi-square statistic.
+- Text labels are centered within each cell for clarity.
+- Includes a colorbar representing the strength of association.
+- Axes and ticks are adjusted for clear visualization.
+
+Author: [DA Silva, DG]
+Date: [28/09/2025]
+===============================================================================
+"""
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+from matplotlib import cm
+
+# --- Input Data ---
+data = {
+    "Association": [
+        "1st Author Sex × Participant Sex",
+        "Last Author Sex × Participant Sex",
+        "Participant Sex × Muscle Biopsy",
+        "Participant Sex × Molecular Analyses",
+        "Participant Sex × Publication Century"
+    ],
+    "Chi-square (χ²)": [5.86, 0.47, 1.78, 9.45, 1.41],
+    "p-value": [0.119, 0.793, 0.410, 0.009, 0.495],
+    "Cramer’s V": [0.10, 0.03, 0.056, 0.13, 0.05]
+}
+
+# Convert the dictionary to a pandas DataFrame
+df = pd.DataFrame(data)
+
+# --- Normalize Chi-square values for color mapping ---
+chi_values = df["Chi-square (χ²)"].values
+norm = plt.Normalize(vmin=min(chi_values), vmax=max(chi_values))  # Normalization for colormap
+cmap = cm.coolwarm  # Choose a diverging colormap
+
+# --- Create figure and axes ---
+fig, ax = plt.subplots(figsize=(6.5, 4.2))  # Width x Height in inches
+
+# Determine number of rows and columns for the matrix
+n_rows = df.shape[0]          # Number of associations
+n_cols = df.shape[1] - 1      # Exclude the 'Association' column
+
+# --- Draw colored cells for each matrix element ---
+for i in range(n_rows):
+    # Map the Chi-square value to a color
+    color = cmap(norm(df["Chi-square (χ²)"].iloc[i]))
+    for j in range(n_cols):
+        # Draw a rectangle representing the cell
+        rect = plt.Rectangle((j, i), 1, 1, facecolor=color, edgecolor='black')
+        ax.add_patch(rect)
+
+        # Add text inside the cell
+        if j == 0:
+            text = f"{df['Chi-square (χ²)'].iloc[i]:.2f}"
+        elif j == 1:
+            text = f"{df['p-value'].iloc[i]:.3f}"
+        else:
+            text = f"{df['Cramer’s V'].iloc[i]:.3f}"
+
+        ax.text(j + 0.5, i + 0.5, text, ha='center', va='center', color='black')
+
+# --- Configure axes limits and labels ---
+ax.set_xlim(0, n_cols)
+ax.set_ylim(0, n_rows)
+ax.invert_yaxis()  # Invert Y-axis to have the first row on top
+ax.set_xticks([0.5, 1.5, 2.5])  # Set X-ticks at the center of each column
+ax.set_xticklabels(["Chi-square (χ²)", "p-value", "Cramer's V"], rotation=0, ha='center')
+ax.set_yticks(np.arange(n_rows) + 0.5)
+ax.set_yticklabels(df["Association"])
+ax.tick_params(axis='both', length=0)  # Remove tick marks for cleaner look
+
+# --- Add a colorbar indicating association strength ---
+sm = cm.ScalarMappable(cmap=cmap, norm=norm)
+sm.set_array([])  # Required for matplotlib <3.1
+cbar = fig.colorbar(sm, ax=ax, fraction=0.05, pad=0.03)
+cbar.set_label('Association Strength', fontsize=12)
+
+# --- Set title for the matrix ---
+ax.set_title('Visualization of Associations between Study Variables', fontsize=14, pad=12)
+
+plt.tight_layout()  # Adjust layout to prevent clipping
+plt.show()          # Display the figure
+
+
+
+ATTENTION: THIS CODE TEMPLATE IS PROVIDED AS AN ILLUSTRATION OF HOW THE AUTHORS IMPLEMENTED THE ANALYSES. IT DOES NOT NECESSARILY ADDRESS OR SOLVE ALL PROBLEMS RELATED TO THE TOPIC. USERS SHOULD ADAPT AND MODIFY THE CODE AS NEEDED TO FIT THEIR SPECIFIC ANALYTICAL REQUIREMENTS.
