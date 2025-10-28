@@ -1,0 +1,55 @@
+Supplementary Material
+1. Search Strategy – MEDLINE (PubMed)
+#	Search String
+1	"resistance training"[MeSH] OR "resistance training"[tiab] OR "weight lifting"[MeSH] OR "weight lifting"[tiab] OR "strength training"[tiab] OR "weight bearing strengthening program"[tiab] OR "weight bearing exercise program"[tiab] OR "resistance exercise"[tiab] OR "strength exercise"[tiab] OR "weight exercise"[tiab] OR "resistance program"[tiab] OR "weight program"[tiab] OR "strength program"[tiab]
+2	"skeletal muscle enlargement"[MeSH] OR "skeletal muscle enlargement"[tiab] OR "muscle hypertrophy"[tiab] OR "muscular hypertrophy"[tiab] OR "quadriceps hypertrophy"[tiab] OR "muscle mass"[tiab] OR "muscle growth"[tiab] OR "muscle increase"[tiab] OR "muscle fiber"[tiab] OR "skeletal muscle"[tiab] OR "muscle size"[tiab] OR "vastus lateralis"[tiab] OR "muscle cross-sectional area"[tiab]
+3	(#1 AND #2)
+4	"meta-analysis"[Publication Type] OR "meta-analysis as topic"[MeSH] OR "systematic review"[Publication Type] OR "systematic reviews as topic"[MeSH] OR "systematic review"[tiab] OR "systematic literature review"[tiab] OR "systematic scoping review"[tiab] OR "systematic narrative review"[tiab] OR "systematic qualitative review"[tiab] OR "systematic evidence review"[tiab] OR "systematic quantitative review"[tiab] OR "systematic meta review"[tiab] OR "systematic critical review"[tiab] OR "systematic mixed studies review"[tiab] OR "systematic mapping review"[tiab] OR "systematic cochrane review"[tiab] OR "systematic search and review"[tiab] OR "systematic integrative review"[tiab] OR "meta-analysis"[tiab] OR "letter"[Publication Type] OR "book review"[Publication Type] OR "academic dissertation"[Publication Type] OR "editorial"[Publication Type] OR "guideline"[Publication Type] OR "monograph"[Publication Type]
+5	(#3 NOT #4)
+2. Search Strategy – EMBASE (Elsevier)
+#	Search String
+1	'weight lifting'/exp OR 'weight lifting' OR 'resistance training'/exp OR 'resistance training' OR 'weight machine'/exp OR 'weight machine' OR 'strength training':ab,ti OR 'resistance training':ab,ti OR 'weight lifting':ab,ti OR 'weight bearing strengthening program':ab,ti OR 'weight bearing exercise program':ab,ti OR 'resistance exercise':ab,ti OR 'strength exercise':ab,ti OR 'weight exercise':ab,ti OR 'resistance program':ab,ti OR 'weight program':ab,ti OR 'strength program':ab,ti
+2	'skeletal muscle enlargement'/exp OR 'skeletal muscle enlargement':ab,ti OR 'muscle hypertrophy':ab,ti OR 'muscular hypertrophy':ab,ti OR 'quadriceps hypertrophy':ab,ti OR 'muscle mass':ab,ti OR 'muscle growth':ab,ti OR 'muscle increase':ab,ti OR 'muscle fiber':ab,ti OR 'skeletal muscle':ab,ti OR 'muscle size':ab,ti OR 'vastus lateralis':ab,ti OR 'muscle cross-sectional area':ab,ti
+3	(#1 AND #2)
+4	'meta-analysis':it OR 'meta-analysis as topic'/exp OR 'systematic review':it OR 'systematic reviews as topic'/exp OR 'systematic review':ab,ti OR 'systematic literature review':ab,ti OR 'systematic scoping review':ab,ti OR 'systematic narrative review':ab,ti OR 'systematic qualitative review':ab,ti OR 'systematic evidence review':ab,ti OR 'systematic quantitative review':ab,ti OR 'systematic meta review':ab,ti OR 'systematic critical review':ab,ti OR 'systematic mixed studies review':ab,ti OR 'systematic mapping review':ab,ti OR 'systematic cochrane review':ab,ti OR 'systematic search and review':ab,ti OR 'systematic integrative review':ab,ti OR 'meta-analysis':ab,ti OR 'letter':it OR 'book review':it OR 'academic dissertation':it OR 'editorial':it OR 'guideline':it OR 'review':it OR 'monograph':it
+5	(#3 NOT #4)
+3. Data Extracted from Included Studies
+3.1 General Study Information
+
+Article title
+
+Year of publication
+
+First author
+
+Last author
+
+Gender/sex of the first author
+
+Gender/sex of the last author
+
+3.2 Sample Characteristics
+
+Number of participants completing the study
+
+Number of male participants completing the study
+
+Number of female participants completing the study
+
+3.3 Study Outcomes
+
+Fat-free mass: measurement tool and anatomical region
+
+Fat-free mass and bone: measurement tool and anatomical region
+
+Lean mass: measurement tool and anatomical region
+
+Muscle cross-sectional area: measurement tool and anatomical region
+
+Muscle volume: measurement tool and anatomical region
+
+Muscle architecture: measurement tool and anatomical region
+
+Muscle fiber cross-sectional area: measurement tool and anatomical region
+
+Molecular mechanisms of hypertrophy: measurement tool and anatomical region
